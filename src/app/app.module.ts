@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from 'src/users/users.module';
+import { EventsModule } from 'src/events/events.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { UsersModule } from 'src/users/users.module';
       isGlobal: true,
     }),
     UsersModule,
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
