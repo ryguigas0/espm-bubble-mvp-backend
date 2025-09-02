@@ -1,0 +1,118 @@
+type: collection.insomnia.rest/5.0
+name: Bubble Backend
+meta:
+  id: wrk_337cb7214e0c4bf2861950f9fff65710
+  created: 1756824057080
+  modified: 1756824067170
+  description: ""
+collection:
+  - name: Users
+    meta:
+      id: fld_eabb9a2b72b74ad1978b8b64df7211e8
+      created: 1756824316115
+      modified: 1756824316115
+      sortKey: -1756824316115
+      description: ""
+    children:
+      - url: "{{ _.url }}/v1/users"
+        name: Create
+        meta:
+          id: req_d6b07328d8d24db98819bdd8b0593c13
+          created: 1756824057209
+          modified: 1756824320158
+          isPrivate: false
+          description: ""
+          sortKey: -1756824320137
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Guilherme2",
+            	"password": "senha123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/auth/login"
+        name: Login
+        meta:
+          id: req_4693fe7397014b08a8dbe84db5562748
+          created: 1756824335309
+          modified: 1756825676742
+          isPrivate: false
+          description: ""
+          sortKey: -1756824320037
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"id": "68b702e4e9e1b0ce4a5e348e",
+            	"pass": "senha123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/users/me"
+        name: Loged in data
+        meta:
+          id: req_cba4ea00b00744d0bdb1149f74143857
+          created: 1756828072539
+          modified: 1756828513278
+          isPrivate: false
+          description: ""
+          sortKey: -1756828072539
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.5.0
+            id: pair_329e210cf3324ef4af1b76e433e08b51
+        authentication:
+          type: bearer
+          prefix: "Bearer "
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_b32cd307dcc8056fd03f17770f9d51a0397acfee
+    created: 1756824057088
+    modified: 1756824057088
+environments:
+  name: Base Environment
+  meta:
+    id: env_b32cd307dcc8056fd03f17770f9d51a0397acfee
+    created: 1756824057084
+    modified: 1756824086802
+    isPrivate: false
+  data:
+    url: http://localhost:3000
