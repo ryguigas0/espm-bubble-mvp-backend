@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, Types } from 'mongoose';
 import {
   Coordinates,
   CoordinatesSchema,
@@ -44,13 +44,15 @@ export class User {
 
   @Prop({
     required: true,
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: User }],
-    ref: 'User',
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   })
   blockedUsers: string[];
 
-  @Prop()
-  friendedBy: User[];
+  @Prop({
+    required: true,
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  })
+  friends: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
