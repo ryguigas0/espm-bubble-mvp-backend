@@ -47,7 +47,7 @@ export class UsersService {
       const user = await this.userModel.findById(id);
 
       if (!user) {
-        throw new NotFoundException('User not found!');
+        throw new NotFoundException(`User ${id} not found!`);
       }
 
       return user;
@@ -140,6 +140,41 @@ export class UsersService {
     });
 
     return friends;
+  }
+
+  async removeFriend(userId: string, friendId: string) {
+    const user = await this.findOne(userId);
+
+    if (user.friends.every((f) => f.toString() !== friendId))
+      throw new BadRequestException(friendId + ' was not added as friends');
+
+    const friend = await this.findOne(friendId);
+
+    try {
+      await this.userModel.updateOne(
+        { _id: user._id },
+        {
+          $pull: {
+            friends: friend._id,
+          },
+        },
+      );
+
+      await this.userModel.updateOne(
+        {
+          _id: friend._id,
+        },
+        {
+          $pull: {
+            friends: user._id,
+          },
+        },
+      );
+
+      return { message: 'Friend removed' };
+    } catch (_error) {
+      throw new InternalServerErrorException('Error removing friend');
+    }
   }
 
   // remove(id: number) {

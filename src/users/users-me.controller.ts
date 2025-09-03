@@ -1,4 +1,13 @@
-import { Controller, Get, Body, Patch, Request, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Request,
+  Post,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import type { LoggedInReq } from 'src/util/loged-in-req';
 import { UserDto } from './dto/user.dto';
@@ -46,6 +55,16 @@ export class UsersMeController {
     const friends = await this.usersService.getFriends(req.user.sub);
 
     return friends.map((f) => new UserDto(f._id.toString(), f));
+  }
+
+  @Delete('friends/:friendId')
+  async removeFriend(
+    @Request() req: LoggedInReq,
+    @Param('friendId') friendId: string,
+  ) {
+    const result = await this.usersService.removeFriend(req.user.sub, friendId);
+
+    return result;
   }
 
   // @Post('block')
