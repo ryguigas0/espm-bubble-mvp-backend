@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -98,6 +99,47 @@ export class UsersService {
       .exec();
 
     return { id: user._id, message: 'Updated' };
+  }
+
+  async addFriend(userId: string, friendId: string) {
+    if (userId === friendId)
+      throw new BadRequestException('Cannot add self as friend');
+
+    const user = await this.findOne(userId);
+
+    const friend = await this.findOne(friendId);
+
+    try {
+      await this.userModel.updateOne(
+        { _id: user._id },
+        {
+          $addToSet: { friends: friend._id },
+        },
+      );
+
+      await this.userModel.updateOne(
+        { _id: friend._id },
+        {
+          $addToSet: { friends: user._id },
+        },
+      );
+
+      return { message: 'Friend added' };
+    } catch (_error) {
+      throw new InternalServerErrorException('Error adding friend');
+    }
+  }
+
+  async getFriends(userId: string) {
+    const user = await this.findOne(userId);
+
+    const friends = await this.userModel.find({
+      _id: {
+        $in: user.friends,
+      },
+    });
+
+    return friends;
   }
 
   // remove(id: number) {
