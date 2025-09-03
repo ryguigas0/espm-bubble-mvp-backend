@@ -9,6 +9,7 @@ import { Attendance } from './attendance.schema';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({
+  timestamps: true,
   collection: 'users',
 })
 export class User {
