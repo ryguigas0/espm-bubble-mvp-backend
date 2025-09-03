@@ -15,7 +15,11 @@ export class UsersService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async create(createUserDto: CreateUserDto) {
-    const { name, password } = createUserDto;
+    const { email, name, password } = createUserDto;
+
+    const userWithEmail = await this.findByEmail(email);
+
+    if (userWithEmail) throw new BadRequestException('Email already taken!');
 
     const embeddings = new Array(10)
       .fill(1)
@@ -25,6 +29,7 @@ export class UsersService {
       const salt = await bcrypt.genSalt(10);
       const passwordHash = await bcrypt.hash(password, salt);
       const newUser = await this.userModel.create({
+        email,
         name,
         passwordHash,
         embeddings,
@@ -46,6 +51,18 @@ export class UsersService {
       return user;
     } catch (_error) {
       throw new BadRequestException('Invalid ID');
+    }
+  }
+
+  async findByEmail(email: string) {
+    try {
+      const user = await this.userModel.findOne({
+        email: email,
+      });
+
+      return user;
+    } catch (_error) {
+      throw new BadRequestException('Invalid email');
     }
   }
 

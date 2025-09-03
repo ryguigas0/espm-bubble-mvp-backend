@@ -13,11 +13,21 @@ export type UserDocument = HydratedDocument<User>;
 })
 export class User {
   @Prop({
-    type: String,
     required: true,
     trim: true,
   })
   name: string;
+
+  @Prop({
+    required: true,
+    validate: (input: string) => {
+      const emailRegex =
+        /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/g;
+
+      return emailRegex.test(input);
+    },
+  })
+  email: string;
 
   @Prop({ default: 'GRANDE-SP' })
   region: string;

@@ -11,8 +11,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async login(userId: string, pass: string) {
-    const user = await this.usersService.findOne(userId);
+  async login(email: string, pass: string) {
+    const user = await this.usersService.findByEmail(email);
 
     if (!user) throw new UnauthorizedException('User not found');
 
@@ -20,10 +20,10 @@ export class AuthService {
 
     if (!cmp) throw new UnauthorizedException('Wrong password');
 
-    const { passwordHash, ...result } = user.toObject();
+    const { passwordHash, _id, ...result } = user.toObject();
 
     const payload: TokenPayloadDto = {
-      sub: userId,
+      sub: _id.toString(),
       data: result,
     };
 
