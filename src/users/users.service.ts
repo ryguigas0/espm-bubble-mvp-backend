@@ -52,7 +52,7 @@ export class UsersService {
 
       return user;
     } catch (_error) {
-      throw new BadRequestException('Invalid ID');
+      throw new BadRequestException(`Invalid ID ${id}`);
     }
   }
 
@@ -177,7 +177,61 @@ export class UsersService {
     }
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
+  async blockUser(userId: string, blockedId: string) {
+    if (userId === blockedId)
+      throw new BadRequestException('Cannot block self');
+
+    const user = await this.findOne(userId);
+
+    const blocked = await this.findOne(blockedId);
+
+    try {
+      await this.userModel.updateOne(
+        { _id: user._id },
+        {
+          $addToSet: { blockedUsers: blocked._id },
+        },
+      );
+
+      return { message: 'Blocked user' };
+    } catch (_error) {
+      throw new InternalServerErrorException('Error blocking user');
+    }
+  }
+
+  async getBlockList(userId: string) {
+    const user = await this.findOne(userId);
+
+    const blockList = await this.userModel.find({
+      _id: {
+        $in: user.blockedUsers,
+      },
+    });
+
+    return blockList;
+  }
+
+  async unblockUser(userId: string, blockedId: string) {
+    const user = await this.findOne(userId);
+
+    if (user.blockedUsers.every((f) => f.toString() !== blockedId))
+      throw new BadRequestException(blockedId + ' was never blocked');
+
+    const blocked = await this.findOne(blockedId);
+
+    try {
+      await this.userModel.updateOne(
+        { _id: user._id },
+        {
+          $pull: {
+            blockedUsers: blocked._id,
+          },
+        },
+      );
+
+      return { message: 'User unblocked' };
+    } catch (_error) {
+      throw new InternalServerErrorException('Error unblocking friend');
+    }
+  }
 }
