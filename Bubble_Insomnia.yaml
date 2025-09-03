@@ -19,7 +19,7 @@ collection:
         meta:
           id: req_d6b07328d8d24db98819bdd8b0593c13
           created: 1756824057209
-          modified: 1756909050102
+          modified: 1756923458347
           isPrivate: false
           description: ""
           sortKey: -1756908980044
@@ -28,8 +28,8 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"email": "guiga@email.com",
-            	"name": "Guilherme3",
+            	"email": "{% faker 'randomEmail' %}",
+            	"name": "{% faker 'randomFullName' %}",
             	"password": "senha123"
             }
         headers:
@@ -50,7 +50,7 @@ collection:
         meta:
           id: req_4693fe7397014b08a8dbe84db5562748
           created: 1756824335309
-          modified: 1756910660569
+          modified: 1756923747371
           isPrivate: false
           description: ""
           sortKey: -1756908979944
@@ -108,7 +108,7 @@ collection:
         meta:
           id: req_c0bf3038af0d4ec4bd4d6a61cb5446ab
           created: 1756908979844
-          modified: 1756911009562
+          modified: 1756923613706
           isPrivate: false
           description: ""
           sortKey: -1756908979844
@@ -117,8 +117,6 @@ collection:
           mimeType: application/json
           text: |-
             {
-            	"name": "Jonathan",
-            	"email": "joe@mail.com",
             	"lat": -23.58719199525316,
             	"lon": -46.64436400146898
             }
@@ -139,6 +137,176 @@ collection:
             send: true
             store: true
           rebuildPath: true
+      - url: "{{ _.url }}/v1/users/me/friends"
+        name: Add Friend
+        meta:
+          id: req_bc1c55e92c884869a654608a4b709f52
+          created: 1756922882764
+          modified: 1756923485891
+          isPrivate: false
+          description: ""
+          sortKey: -1756908979744
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"friendId": "68b88658075c3e17d943dfb1"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/users/me/friends"
+        name: Friends
+        meta:
+          id: req_afc1cb11bdef446d8665d03719aab0ec
+          created: 1756922896922
+          modified: 1756923167960
+          isPrivate: false
+          description: ""
+          sortKey: -1756906660057
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/users/me/friends/68b88655075c3e17d943dfae"
+        name: Remove friend
+        meta:
+          id: req_869dfde97deb4f6eb1fc2e57888dd5e4
+          created: 1756923711868
+          modified: 1756924565949
+          isPrivate: false
+          description: ""
+          sortKey: -1756906660007
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/users/me/block"
+        name: Block user
+        meta:
+          id: req_8278d5e4459046bc8dae2798743a85a7
+          created: 1756925858886
+          modified: 1756925989862
+          isPrivate: false
+          description: ""
+          sortKey: -1756906659982
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"blockedUserId": "68b88658075c3e17d943dfb1"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/users/me/block"
+        name: Block list
+        meta:
+          id: req_b9550e34648e4292bb876863be735b42
+          created: 1756926003574
+          modified: 1756926025418
+          isPrivate: false
+          description: ""
+          sortKey: -1756906659907
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/users/me/block/68b88658075c3e17d943dfb1"
+        name: Unblock
+        meta:
+          id: req_d14926de85b945e9985a7c9b1928ec35
+          created: 1756926012962
+          modified: 1756926047695
+          isPrivate: false
+          description: ""
+          sortKey: -1756906659857
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
   - name: Events
     meta:
       id: fld_8aaf5c624b914509adeab166eb3cb760
@@ -147,12 +315,12 @@ collection:
       sortKey: -1756824316215
       description: ""
     children:
-      - url: "{{ _.url }}/events"
+      - url: "{{ _.url }}/v1/events"
         name: Get events
         meta:
           id: req_15498c6c66f74c9dbe2826d97c566942
           created: 1756904340370
-          modified: 1756904516686
+          modified: 1756927586551
           isPrivate: false
           description: ""
           sortKey: -1756904340370
@@ -166,6 +334,45 @@ collection:
           prefix: "Bearer "
           token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
             'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/events"
+        name: Create
+        meta:
+          id: req_646401741da84bee8c69aa659bddddae
+          created: 1756926711123
+          modified: 1756926957784
+          isPrivate: false
+          description: ""
+          sortKey: -1756926711123
+        method: POST
+        body:
+          mimeType: application/json
+          text: >-
+            {
+            	"name": "Festa do Gui",
+            	"address": "R. Joaquim Távora, 1306 - Vila Mariana, São Paulo - SP, 04015-013",
+            	"lat": -23.587439294559918,
+            	"lon": -46.644910271404065,
+            	"startsAt": "{% now 'iso-8601', '' %}",
+            	"endsAt": "2025-09-04T01:00:00.000Z"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
         settings:
           renderRequestBody: true
           encodeUrl: true
