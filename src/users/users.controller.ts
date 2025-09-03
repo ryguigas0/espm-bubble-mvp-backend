@@ -1,19 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/auth/public.decorator';
 import type { LoggedInReq } from 'src/util/loged-in-req';
+import { UserDto } from './dto/user.dto';
 
 @Controller('v1/users')
 export class UsersController {
@@ -26,14 +17,23 @@ export class UsersController {
   }
 
   @Get('me')
-  findOne(@Request() req: LoggedInReq) {
-    return this.usersService.findOne(req.user.sub);
+  async findOne(@Request() req: LoggedInReq) {
+    const currUser = await this.usersService.findOne(req.user.sub);
+
+    return new UserDto(req.user.sub, currUser.toObject());
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
+  @Patch('me')
+  async update(
+    @Request() req: LoggedInReq,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    const updatedUser = await this.usersService.update(
+      req.user.sub,
+      updateUserDto,
+    );
+    return updatedUser;
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

@@ -20,11 +20,14 @@ export class AuthService {
 
     if (!cmp) throw new UnauthorizedException('Wrong password');
 
-    const { passwordHash, _id, ...result } = user.toObject();
+    const { _id, name } = user.toObject();
 
     const payload: TokenPayloadDto = {
       sub: _id.toString(),
-      data: result,
+      data: {
+        name,
+        email,
+      },
     };
 
     return {

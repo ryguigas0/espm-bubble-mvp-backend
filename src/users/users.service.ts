@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/user.schema';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
+import { Coordinates } from 'src/util/schemas/coordinates.schema';
 
 @Injectable()
 export class UsersService {
@@ -56,9 +57,11 @@ export class UsersService {
 
   async findByEmail(email: string) {
     try {
-      const user = await this.userModel.findOne({
-        email: email,
-      });
+      const user = await this.userModel
+        .findOne({
+          email: email,
+        })
+        .exec();
 
       return user;
     } catch (_error) {
@@ -66,9 +69,36 @@ export class UsersService {
     }
   }
 
-  // update(id: string, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
+
+    const { email, lat, lon, name } = updateUserDto;
+
+    if (!email && !lat && !lon && !name) {
+      return { id, message: 'No changes' };
+    }
+
+    let coords: Coordinates | undefined = undefined;
+
+    if (lat && lon) {
+      coords = {
+        type: 'Point',
+        coordinates: [lon, lat],
+      };
+    }
+    const _updateResult = await this.userModel
+      .updateOne(
+        { _id: user._id },
+        {
+          email,
+          name,
+          coords,
+        },
+      )
+      .exec();
+
+    return { id: user._id, message: 'Updated' };
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} user`;

@@ -7,6 +7,7 @@ export class Coordinates {
 
   @Prop({ type: [Number], required: true })
   coordinates: number[];
+  // longitude, latitude
 }
 
 export const CoordinatesSchema = SchemaFactory.createForClass(Coordinates);
