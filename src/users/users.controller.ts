@@ -12,20 +12,21 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { Public } from 'src/auth/public.decorator';
+import type { LoggedInReq } from 'src/util/loged-in-req';
 
 @Controller('v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Public()
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }
 
   @Get('me')
-  @UseGuards(AuthGuard)
-  findOne(@Request() req) {
+  findOne(@Request() req: LoggedInReq) {
     return this.usersService.findOne(req.user.sub);
   }
 
