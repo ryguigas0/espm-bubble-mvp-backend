@@ -17,5 +17,6 @@ import { Event, EventSchema } from './schemas/event.schema';
   ],
   controllers: [EventsController],
   providers: [EventsService],
+  exports: [EventsService],
 })
 export class EventsModule {}

@@ -4,7 +4,7 @@ import {
   Coordinates,
   CoordinatesSchema,
 } from 'src/util/schemas/coordinates.schema';
-import { Attendance } from './attendance.schema';
+import { EventAttendance } from './attendance.schema';
 
 export type EventDocument = HydratedDocument<Event>;
 
@@ -39,8 +39,8 @@ export class Event {
   @Prop({ type: CoordinatesSchema, required: true, index: '2dsphere' })
   coords: Coordinates;
 
-  @Prop({ type: [Attendance] })
-  attendance: Attendance[];
+  @Prop({ type: [EventAttendance] })
+  attendance: EventAttendance[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

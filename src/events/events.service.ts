@@ -7,7 +7,6 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from './schemas/event.schema';
 import { Model } from 'mongoose';
-import { PushAttendanceDto } from './dto/push-attendance.dto';
 
 @Injectable()
 export class EventsService {
@@ -75,19 +74,10 @@ export class EventsService {
     return event;
   }
 
-  async pushAttendance(
-    id: string,
-    userId: string,
-    pushAttendanceDto: PushAttendanceDto,
-  ) {
+  async pushAttendance(id: string, userId: string, probability: number) {
     const event = await this.findOne(id);
 
-    const { probability } = pushAttendanceDto;
-
-    if (!userId || !probability)
-      throw new BadRequestException('Invalid attendance data');
-
-    await this.eventModel.updateOne(
+    const result = await this.eventModel.updateOne(
       { _id: event._id },
       {
         $addToSet: {
@@ -99,18 +89,16 @@ export class EventsService {
       },
     );
 
-    return { message: 'Attendance confirmed' };
+    return result.acknowledged;
   }
 
-  async removeAttendance(id: string, userId: string) {
-    const event = await this.findOne(id);
-
-    if (!userId) throw new BadRequestException('Invalid attendance data');
+  async removeAttendance(eventId: string, userId: string) {
+    const event = await this.findOne(eventId);
 
     if (event.attendance.every((a) => a.userId.toString() !== userId))
       throw new BadRequestException(userId + ' was not attending the event');
 
-    await this.eventModel.updateOne(
+    const result = await this.eventModel.updateOne(
       { _id: event._id },
       {
         $pull: {
@@ -121,7 +109,7 @@ export class EventsService {
       },
     );
 
-    return { message: 'Attendance removed' };
+    return result.acknowledged;
   }
 
   // update(id: number, updateEventDto: UpdateEventDto) {

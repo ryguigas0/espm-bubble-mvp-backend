@@ -1,16 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Request,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, Param } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import type { LoggedInReq } from 'src/util/loged-in-req';
-import { PushAttendanceDto } from './dto/push-attendance.dto';
 
 @Controller('v1/events')
 export class EventsController {
@@ -29,27 +20,6 @@ export class EventsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.eventsService.findOne(id);
-  }
-
-  @Post(':eventId/attendance')
-  async pushAttendance(
-    @Param('eventId') id: string,
-    @Request() req: LoggedInReq,
-    @Body() pushAttendanceDto: PushAttendanceDto,
-  ) {
-    return await this.eventsService.pushAttendance(
-      id,
-      req.user.sub,
-      pushAttendanceDto,
-    );
-  }
-
-  @Delete(':eventId/attendance')
-  async removeAttendance(
-    @Param('eventId') id: string,
-    @Request() req: LoggedInReq,
-  ) {
-    return await this.eventsService.removeAttendance(id, req.user.sub);
   }
 
   // @Patch(':id')

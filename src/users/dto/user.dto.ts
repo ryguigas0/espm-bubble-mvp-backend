@@ -13,9 +13,9 @@ export class UserDto extends OmitType(User, ['passwordHash'] as const) {
     // this.region = user.region;
     this.profileImageURL = user.profileImageURL;
     this.coords = user.coords;
-    // this.embeddings = user.embeddings;
+    this.embeddings = user.embeddings;
     // this.attendance = user.attendance;
-    // this.blockedUsers = user.blockedUsers;
+    this.blockedUsers = user.blockedUsers;
     // this.friends = user.friends;
     // this.deletedAt = user.deletedAt;
   }
