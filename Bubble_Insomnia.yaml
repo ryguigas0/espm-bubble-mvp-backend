@@ -347,7 +347,7 @@ collection:
         meta:
           id: req_646401741da84bee8c69aa659bddddae
           created: 1756926711123
-          modified: 1756926957784
+          modified: 1757719626718
           isPrivate: false
           description: ""
           sortKey: -1756926711123
@@ -361,11 +361,97 @@ collection:
             	"lat": -23.587439294559918,
             	"lon": -46.644910271404065,
             	"startsAt": "{% now 'iso-8601', '' %}",
-            	"endsAt": "2025-09-04T01:00:00.000Z"
+            	"endsAt": "2025-09-13T04:26:47.450Z"
             }
         headers:
           - name: Content-Type
             value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/events/68c4ac52c57243c5eb0c1099"
+        name: Get event
+        meta:
+          id: req_231530d536ff44518de8e5ee3fc61f59
+          created: 1757719648219
+          modified: 1757719659023
+          isPrivate: false
+          description: ""
+          sortKey: -1756917845583.5
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/events/68c4ac52c57243c5eb0c1099/attendance"
+        name: Add presence
+        meta:
+          id: req_9ef0a55e5270498a8f3f18eaa738cbb1
+          created: 1757719698108
+          modified: 1757719971922
+          isPrivate: false
+          description: ""
+          sortKey: -1756904340270
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"probability": 100
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.5.0
+        authentication:
+          type: bearer
+          token: "{% response 'body', 'req_4693fe7397014b08a8dbe84db5562748',
+            'b64::JC50b2tlbg==::46b', 'always', 60 %}"
+          prefix: "Bearer "
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.url }}/v1/events/68c4ac52c57243c5eb0c1099/attendance"
+        name: Remove presence
+        meta:
+          id: req_e3e9beae950743908036c97895200fa8
+          created: 1757720061988
+          modified: 1757720067985
+          isPrivate: false
+          description: ""
+          sortKey: -1755998362927.5
+        method: DELETE
+        headers:
           - name: User-Agent
             value: insomnia/11.5.0
         authentication:

@@ -1,8 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from './schemas/event.schema';
 import { Model } from 'mongoose';
+import { PushAttendanceDto } from './dto/push-attendance.dto';
 
 @Injectable()
 export class EventsService {
@@ -62,9 +67,62 @@ export class EventsService {
     return events;
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} event`;
-  // }
+  async findOne(id: string) {
+    const event = await this.eventModel.findById(id);
+
+    if (!event) throw new NotFoundException('Event not found');
+
+    return event;
+  }
+
+  async pushAttendance(
+    id: string,
+    userId: string,
+    pushAttendanceDto: PushAttendanceDto,
+  ) {
+    const event = await this.findOne(id);
+
+    const { probability } = pushAttendanceDto;
+
+    if (!userId || !probability)
+      throw new BadRequestException('Invalid attendance data');
+
+    await this.eventModel.updateOne(
+      { _id: event._id },
+      {
+        $addToSet: {
+          attendance: {
+            userId,
+            probability,
+          },
+        },
+      },
+    );
+
+    return { message: 'Attendance confirmed' };
+  }
+
+  async removeAttendance(id: string, userId: string) {
+    const event = await this.findOne(id);
+
+    if (!userId) throw new BadRequestException('Invalid attendance data');
+
+    if (event.attendance.every((a) => a.userId.toString() !== userId))
+      throw new BadRequestException(userId + ' was not attending the event');
+
+    await this.eventModel.updateOne(
+      { _id: event._id },
+      {
+        $pull: {
+          attendance: {
+            userId,
+          },
+        },
+      },
+    );
+
+    return { message: 'Attendance removed' };
+  }
 
   // update(id: number, updateEventDto: UpdateEventDto) {
   //   return `This action updates a #${id} event`;
