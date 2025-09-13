@@ -10,13 +10,13 @@ export class UserDto extends OmitType(User, ['passwordHash'] as const) {
     this.id = id;
     this.name = user.name;
     this.email = user.email;
-    // this.region = user.region;
+    this.region = user.region;
     this.profileImageURL = user.profileImageURL;
     this.coords = user.coords;
     this.embeddings = user.embeddings;
-    // this.attendance = user.attendance;
+    this.attendance = user.attendance;
     this.blockedUsers = user.blockedUsers;
-    // this.friends = user.friends;
-    // this.deletedAt = user.deletedAt;
+    this.friends = user.friends;
+    this.deletedAt = user.deletedAt;
   }
 }
