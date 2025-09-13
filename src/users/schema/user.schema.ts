@@ -4,7 +4,7 @@ import {
   Coordinates,
   CoordinatesSchema,
 } from 'src/util/schemas/coordinates.schema';
-import { Attendance } from './attendance.schema';
+import { UserAttendance } from './user-attendance.schema';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -50,8 +50,8 @@ export class User {
   })
   embeddings: number[];
 
-  @Prop({ type: [Attendance] })
-  attendance: Attendance[];
+  @Prop({ type: [UserAttendance] })
+  attendance: UserAttendance[];
 
   @Prop({
     required: true,

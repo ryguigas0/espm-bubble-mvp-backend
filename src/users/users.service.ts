@@ -234,4 +234,44 @@ export class UsersService {
       throw new InternalServerErrorException('Error unblocking friend');
     }
   }
+
+  async pushAttendance(userId: string, eventId: string, probability: number) {
+    const user = await this.findOne(userId);
+
+    const result = await this.userModel.updateOne(
+      { _id: user._id },
+      {
+        $addToSet: {
+          attendance: {
+            eventId,
+            probability,
+          },
+        },
+      },
+    );
+
+    return result.acknowledged;
+  }
+
+  async removeAttendance(userId: string, eventId: string) {
+    const user = await this.findOne(userId);
+
+    if (user.attendance.every((a) => a.eventId.toString() !== eventId))
+      throw new BadRequestException(
+        userId + ' was not attending the event ' + eventId,
+      );
+
+    const result = await this.userModel.updateOne(
+      { _id: user._id },
+      {
+        $pull: {
+          attendance: {
+            eventId,
+          },
+        },
+      },
+    );
+
+    return result.acknowledged;
+  }
 }

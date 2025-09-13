@@ -4,7 +4,7 @@ import {
   Coordinates,
   CoordinatesSchema,
 } from 'src/util/schemas/coordinates.schema';
-import { EventAttendance } from './attendance.schema';
+import { EventAttendance } from './event-attendance.schema';
 
 export type EventDocument = HydratedDocument<Event>;
 

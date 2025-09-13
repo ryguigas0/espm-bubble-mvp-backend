@@ -22,6 +22,8 @@ export class UserEventsService {
 
     await this.eventService.pushAttendance(eventId, userId, probability);
 
+    await this.usersService.pushAttendance(userId, eventId, probability);
+
     return { message: 'Attendance confirmed' };
   }
 
@@ -29,6 +31,8 @@ export class UserEventsService {
     if (!userId) throw new BadRequestException('Invalid attendance data');
 
     await this.eventService.removeAttendance(eventId, userId);
+
+    await this.usersService.removeAttendance(userId, eventId);
 
     return { message: 'Attendance removed' };
   }
