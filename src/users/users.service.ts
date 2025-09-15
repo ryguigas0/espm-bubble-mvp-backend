@@ -288,7 +288,28 @@ export class UsersService {
     );
 
     if (result.modifiedCount === 0) {
-      throw new BadRequestException('User cannot checkin to event ' + eventId);
+      throw new BadRequestException('User cannot check in to event ' + eventId);
+    }
+
+    return result.acknowledged;
+  }
+
+  async checkOut(userId: string, eventId: string) {
+    const user = await this.findOne(userId);
+
+    const result = await this.userModel.updateOne(
+      { _id: user._id, 'attendance.eventId': eventId },
+      {
+        $set: {
+          'attendance.$.checkedOut': true,
+        },
+      },
+    );
+
+    if (result.modifiedCount === 0) {
+      throw new BadRequestException(
+        'User cannot check out to event ' + eventId,
+      );
     }
 
     return result.acknowledged;

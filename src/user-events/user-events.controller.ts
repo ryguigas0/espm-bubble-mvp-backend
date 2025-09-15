@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Param, Post, Request } from '@nestjs/common';
 import { UserEventsService } from './user-events.service';
 import { PushAttendanceDto } from 'src/user-events/dto/push-attendance.dto';
 import type { LoggedInReq } from 'src/util/loged-in-req';
-import { CheckInDto } from './dto/check-in.dto';
+import { CoordsDto } from './dto/coords.dto';
 
 @Controller('v1/events/:eventId')
 export class UserEventsController {
@@ -33,9 +33,22 @@ export class UserEventsController {
   async checkIn(
     @Param('eventId') eventId: string,
     @Request() req: LoggedInReq,
-    @Body() checkInDto: CheckInDto,
+    @Body() checkInDto: CoordsDto,
   ) {
     return await this.userEventsService.checkIn(
+      eventId,
+      req.user.sub,
+      checkInDto,
+    );
+  }
+
+  @Post('checkout')
+  async checkOut(
+    @Param('eventId') eventId: string,
+    @Request() req: LoggedInReq,
+    @Body() checkInDto: CoordsDto,
+  ) {
+    return await this.userEventsService.checkOut(
       eventId,
       req.user.sub,
       checkInDto,

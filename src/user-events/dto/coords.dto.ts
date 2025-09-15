@@ -1,4 +1,4 @@
-export class CheckInDto {
+export class CoordsDto {
   lat: number;
   lon: number;
 }
