@@ -1,4 +1,14 @@
 services:
+  backend:
+    build: .
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
+    environment:
+      MONGO_HOST: mongo
+    depends_on:
+      - mongo
   mongo:
     image: mongodb/mongodb-community-server:8.0-ubi8
     ports:
@@ -16,7 +26,6 @@ services:
       timeout: 5s
       retries: 2
   mongo-express:
-  
     image: mongo-express
     restart: always
     ports:
