@@ -6,6 +6,27 @@ meta:
   modified: 1756904453445
   description: ""
 collection:
+  - url: "{{ _.url }}"
+    name: Version
+    meta:
+      id: req_8d3d3b2794e0466ab5eeac5fe638e9f9
+      created: 1757932949162
+      modified: 1757932958379
+      isPrivate: false
+      description: ""
+      sortKey: -1757932949162
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.6.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
   - name: Users
     meta:
       id: fld_eabb9a2b72b74ad1978b8b64df7211e8
