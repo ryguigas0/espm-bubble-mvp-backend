@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -61,6 +62,7 @@ export class EventsService {
       endsAt: {
         $gt: nowTimestamp,
       },
+      canceledAt: null,
     });
 
     return events;
@@ -74,8 +76,8 @@ export class EventsService {
     return event;
   }
 
-  async pushAttendance(id: string, userId: string, probability: number) {
-    const event = await this.findOne(id);
+  async pushAttendance(eventId: string, userId: string, probability: number) {
+    const event = await this.findOne(eventId);
 
     const result = await this.eventModel.updateOne(
       { _id: event._id },
@@ -112,11 +114,24 @@ export class EventsService {
     return result.acknowledged;
   }
 
-  // update(id: number, updateEventDto: UpdateEventDto) {
-  //   return `This action updates a #${id} event`;
-  // }
+  async cancel(eventId: string, userId: string) {
+    console.log({ eventId, userId });
+    const event = await this.findOne(eventId);
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} event`;
-  // }
+    if (event.owner.toString() !== userId)
+      throw new UnauthorizedException(
+        'Only the event owner can update the event',
+      );
+
+    await this.eventModel.updateOne(
+      {
+        _id: event._id,
+      },
+      {
+        canceledAt: new Date(),
+      },
+    );
+
+    return { message: 'Event canceled' };
+  }
 }

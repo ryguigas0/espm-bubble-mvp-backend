@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Request, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Request,
+  Param,
+  Patch,
+} from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import type { LoggedInReq } from 'src/util/loged-in-req';
@@ -22,10 +30,10 @@ export class EventsController {
     return await this.eventsService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-  //   return this.eventsService.update(+id, updateEventDto);
-  // }
+  @Patch(':id/cancel')
+  async update(@Param('id') id: string, @Request() req: LoggedInReq) {
+    return await this.eventsService.cancel(id, req.user.sub);
+  }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {
