@@ -274,4 +274,23 @@ export class UsersService {
 
     return result.acknowledged;
   }
+
+  async checkIn(userId: string, eventId: string) {
+    const user = await this.findOne(userId);
+
+    const result = await this.userModel.updateOne(
+      { _id: user._id, 'attendance.eventId': eventId },
+      {
+        $set: {
+          'attendance.$.checkedIn': true,
+        },
+      },
+    );
+
+    if (result.modifiedCount === 0) {
+      throw new BadRequestException('User cannot checkin to event ' + eventId);
+    }
+
+    return result.acknowledged;
+  }
 }
