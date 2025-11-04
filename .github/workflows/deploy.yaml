@@ -50,7 +50,6 @@ jobs:
           image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ vars.GCP_SERVICE }}/backend:${{ github.sha }}'
           flags: '--ingress="all" --no-invoker-iam-check --min-instances=0'
           env_vars: |-
-            PORT=${{ vars.PORT }}
             VERSION=${{ github.sha }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_EXPIRES=${{ secrets.JWT_EXPIRES }}
