@@ -48,7 +48,7 @@ jobs:
           service: 'backend'
           region: '${{ env.REGION }}'
           image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ vars.GCP_SERVICE }}/backend:${{ github.sha }}'
-          flags: '--ingress="all" --no-invoker-iam-check'
+          flags: '--ingress="all" --no-invoker-iam-check --min-instances=0'
           env_vars: |-
             PORT=${{ vars.PORT }}
             VERSION=${{ github.sha }}
@@ -56,3 +56,5 @@ jobs:
             JWT_EXPIRES=${{ secrets.JWT_EXPIRES }}
             MONGO_URI=${{ secrets.MONGO_URI }}
             MONGO_AUTH_SOURCE=${{ secrets.MONGO_AUTH_SOURCE }}
+      - name: 'Show Cloud Run URL'
+        run: 'echo "Deploy URL: ${{ steps.deploy.outputs.url }}"'
