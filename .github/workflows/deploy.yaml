@@ -1,5 +1,5 @@
 name: "Build and Deploy to Cloud Run"
-run-name: ${{ github.actor }} is deploying to Cloud Run 🚀
+run-name: ${{ github.actor }} is deploying to Cloud Run 🚀 (${{ github.ref }})
 
 on:
   release:
