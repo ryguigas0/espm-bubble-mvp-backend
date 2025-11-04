@@ -7,7 +7,6 @@ on:
 env:
   PROJECT_ID: "${{ secrets.GCP_PROJECT_ID }}"
   REGION: "${{ secrets.GCP_REGION }}"
-  SERVICE: "${{ secrets.GCP_SERVICE }}"
   WORKLOAD_IDENTITY_PROVIDER: "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}"
   SERVICE_ACCOUNT: "${{ secrets.GCP_SERVICE_ACCOUNT }}"
 
@@ -36,3 +35,9 @@ jobs:
         id: 'docker-auth'
         run: |-
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+      - name: 'Build and push container'
+        id: 'build-push-container'
+        run: |-
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GCP_SERVICE }}/${{ env.GCP_SERVICE }}:${{ github.sha }}"
+          docker build --tag "${DOCKER_TAG}" .
+          docker push "${DOCKER_TAG}"
