@@ -36,10 +36,3 @@ jobs:
         id: 'docker-auth'
         run: |-
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
-      # Tag forma: HOST-NAME/PROJECT-ID/REPOSITORY/IMAGE
-      - name: 'Build and push container'
-        id: 'build-push-container'
-        run: |-
-          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" .
-          docker push "${DOCKER_TAG}"
