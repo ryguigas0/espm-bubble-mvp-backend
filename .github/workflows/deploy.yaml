@@ -1,5 +1,5 @@
 name: "Build and Deploy to Cloud Run"
-run-name: ${{ github.actor }} is deploying to cloud artifact registry 🚀
+run-name: ${{ github.actor }} is deploying to Cloud Run 🚀
 
 on:
   release:
@@ -8,7 +8,6 @@ on:
 env:
   PROJECT_ID: "${{ secrets.GCP_PROJECT_ID }}"
   REGION: "${{ secrets.GCP_REGION }}"
-  SERVICE: "${{ secrets.GCP_SERVICE }}"
   WORKLOAD_IDENTITY_PROVIDER: "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}"
   SERVICE_ACCOUNT: "${{ secrets.GCP_SERVICE_ACCOUNT }}"
 
@@ -37,10 +36,25 @@ jobs:
         id: 'docker-auth'
         run: |-
           gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
-      # Tag forma: HOST-NAME/PROJECT-ID/REPOSITORY/IMAGE
       - name: 'Build and push container'
         id: 'build-push-container'
         run: |-
-          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}"
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ vars.GCP_SERVICE }}/backend:${{ github.sha }}"
           docker build --tag "${DOCKER_TAG}" .
           docker push "${DOCKER_TAG}"
+      - name: 'Cloud Run deploy'
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
+        with:
+          service: 'backend'
+          region: '${{ env.REGION }}'
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ vars.GCP_SERVICE }}/backend:${{ github.sha }}'
+          flags: '--ingress="all" --no-invoker-iam-check --min-instances=0'
+          env_vars: |-
+            VERSION=${{ github.sha }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            JWT_EXPIRES=${{ secrets.JWT_EXPIRES }}
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            MONGO_AUTH_SOURCE=${{ secrets.MONGO_AUTH_SOURCE }}
+      - name: 'Show Cloud Run URL'
+        run: 'echo "Deploy URL: ${{ steps.deploy.outputs.url }}"'
