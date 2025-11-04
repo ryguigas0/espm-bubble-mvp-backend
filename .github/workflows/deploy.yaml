@@ -1,20 +1,46 @@
-name: 'Build and Deploy to Cloud Run'
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: "Build and Deploy to Cloud Run"
+run-name: ${{ github.actor }} is deploying to cloud artifact registry 🚀
+
 on:
   release:
     types: [published]
+
+env:
+  PROJECT_ID: "${{ secrets.GCP_PROJECT_ID }}"
+  REGION: "${{ secrets.GCP_REGION }}"
+  SERVICE: "${{ secrets.GCP_SERVICE }}"
+  WORKLOAD_IDENTITY_PROVIDER: "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}"
+  SERVICE_ACCOUNT: "${{ secrets.GCP_SERVICE_ACCOUNT }}"
+
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v5
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: 'Checkout'
+        uses: 'actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332' # actions/checkout@v4
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@f112390a2df9932162083945e46d439060d66ec2' # google-github-actions/auth@v2
+        with:
+          project_id: '${{ env.PROJECT_ID }}'
+          workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
+          service_account: '${{ env.SERVICE_ACCOUNT }}'
+      - name: 'Install Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          project_id: '${{ env.PROJECT_ID }}'
+          version: '>= 363.0.0'
+      - name: 'Docker Auth'
+        id: 'docker-auth'
+        run: |-
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+      # Tag forma: HOST-NAME/PROJECT-ID/REPOSITORY/IMAGE
+      - name: 'Build and push container'
+        id: 'build-push-container'
+        run: |-
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}"
+          docker build --tag "${DOCKER_TAG}" .
+          docker push "${DOCKER_TAG}"
