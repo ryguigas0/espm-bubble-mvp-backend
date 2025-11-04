@@ -1,5 +1,5 @@
 name: "Build and Deploy to Cloud Run"
-run-name: ${{ github.actor }} is deploying to cloud artifact registry 🚀
+run-name: ${{ github.actor }} is deploying to Cloud Run 🚀
 
 on:
   push:
@@ -41,3 +41,18 @@ jobs:
           DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ vars.GCP_SERVICE }}/backend:${{ github.sha }}"
           docker build --tag "${DOCKER_TAG}" .
           docker push "${DOCKER_TAG}"
+      - name: 'Cloud Run deploy'
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@33553064113a37d688aa6937bacbdc481580be17' # google-github-actions/deploy-cloudrun@v2
+        with:
+          service: 'backend'
+          region: '${{ env.REGION }}'
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ vars.GCP_SERVICE }}/backend:${{ github.sha }}'
+          flags: '--ingress="all" --no-invoker-iam-check'
+          env_vars: |-
+            PORT=${{ vars.PORT }}
+            VERSION=${{ github.sha }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            JWT_EXPIRES=${{ secrets.JWT_EXPIRES }}
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            MONGO_AUTH_SOURCE=${{ secrets.MONGO_AUTH_SOURCE }}
