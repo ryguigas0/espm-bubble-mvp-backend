@@ -2,8 +2,7 @@ name: "Build and Deploy to Cloud Run"
 run-name: ${{ github.actor }} is deploying to cloud artifact registry 🚀
 
 on:
-  release:
-    types: [published]
+  push:
 
 env:
   PROJECT_ID: "${{ secrets.GCP_PROJECT_ID }}"
@@ -28,19 +27,19 @@ jobs:
           project_id: '${{ env.PROJECT_ID }}'
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
           service_account: '${{ env.SERVICE_ACCOUNT }}'
-      - name: 'Install Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
-        with:
-          project_id: '${{ env.PROJECT_ID }}'
-          version: '>= 363.0.0'
-      - name: 'Docker Auth'
-        id: 'docker-auth'
-        run: |-
-          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
-      # Tag forma: HOST-NAME/PROJECT-ID/REPOSITORY/IMAGE
-      - name: 'Build and push container'
-        id: 'build-push-container'
-        run: |-
-          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" .
-          docker push "${DOCKER_TAG}"
+      # - name: 'Install Cloud SDK'
+      #   uses: 'google-github-actions/setup-gcloud@v2'
+      #   with:
+      #     project_id: '${{ env.PROJECT_ID }}'
+      #     version: '>= 363.0.0'
+      # - name: 'Docker Auth'
+      #   id: 'docker-auth'
+      #   run: |-
+      #     gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+      # # Tag forma: HOST-NAME/PROJECT-ID/REPOSITORY/IMAGE
+      # - name: 'Build and push container'
+      #   id: 'build-push-container'
+      #   run: |-
+      #     DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE }}/${{ env.SERVICE }}:${{ github.sha }}"
+      #     docker build --tag "${DOCKER_TAG}" .
+      #     docker push "${DOCKER_TAG}"
