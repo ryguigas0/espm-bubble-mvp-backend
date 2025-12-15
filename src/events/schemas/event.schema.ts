@@ -30,7 +30,7 @@ export class Event {
   @Prop({ type: Date, required: true })
   endsAt: Date;
 
-  @Prop({ type: Date, required: true })
+  @Prop({ type: Date, required: false })
   canceledAt: Date;
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
